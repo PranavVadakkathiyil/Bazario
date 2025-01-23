@@ -7,11 +7,7 @@ const orderSchema = new Schema(
       ref: "User",
       required: true,
     },
-    store: {
-      type: Schema.Types.ObjectId,
-      ref: "Store",
-      required: true,
-    },
+    
     products: [
       {
         product: {
@@ -36,7 +32,7 @@ const orderSchema = new Schema(
     },
     paymentMode: {
       type: String,
-      enum: ["cod", "online"],
+      enum: ["cod", "Razorpay"],
       required: true,
     },
     transactionId: {
