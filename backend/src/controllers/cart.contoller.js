@@ -23,10 +23,15 @@ const getCart = asyncHandler(async (req, res) => {
     cart.totalPrice === totalPrice;
   }
   await cart.save();
-  return res.status(200).json(201, { cart,totalQuantity }, "cart getted successfully");
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, { cart, totalQuantity }, "cart getted successfully")
+    );
 });
 const addToCart = asyncHandler(async (req, res) => {
-  const { userId, productId, Quantity , measurement } = req.body;
+  const { userId, productId, Quantity, measurement } = req.body;
   if (Quantity >= 0) {
     throw new ApiError(409, "Quantity must Add");
   }
@@ -47,18 +52,17 @@ const addToCart = asyncHandler(async (req, res) => {
       item: [
         {
           product: productId,
-        
-        
+
           quantity: Quantity,
-        
-        
+
           size: measurement,
-        }
+        },
       ],
     });
   } else {
     const exisingItem = Cart.items.findIndex(
-      (item) => item.product.toString() === productId && item.size === measurement
+      (item) =>
+        item.product.toString() === productId && item.size === measurement
     );
 
     if (exisingItem >= 0) {
@@ -74,31 +78,35 @@ const addToCart = asyncHandler(async (req, res) => {
     if (!saveToCart) {
       throw new ApiError(409, "Cart not Saved");
     }
+
     return res
       .status(200)
-      .json(201, { saveToCart }, "save to cart successfully");
+      .json(new ApiResponse(200, { saveToCart }, "save to cart successfully"));
   }
 });
-const deleteItem = asyncHandler(async(req,res)=>{
-    const {userId,productId,measurement} = req.body
-    if(!userId || !productId || !measurement){
-        throw new ApiError(409, "User and Product Not fetched");
-    }
-    const cart = await Cart.findOne({user:userId})
-    if(!cart){
-        throw new ApiError(409, "Not Existing user cart");
-    }
-    const ProdutItemIndex = cart.items.findIndex((item)=>item.product.toString()===productId && item.size === measurement)
-    if(!ProdutItemIndex){
-        throw new ApiError(409, "Not Such Item in cart");
-    }
-    const deleteCartItem = cart.items.splice(ProdutItemIndex,1)
-    if(!deleteCartItem){
-        throw new ApiError(409, "Not deleted CartItem");
-    }
-    return res
-      .status(200)
-      .json(201, {}, "Item Deleted from cart successfully");
-})
+const deleteItem = asyncHandler(async (req, res) => {
+  const { userId, productId, measurement } = req.body;
+  if (!userId || !productId || !measurement) {
+    throw new ApiError(409, "User and Product Not fetched");
+  }
+  const cart = await Cart.findOne({ user: userId });
+  if (!cart) {
+    throw new ApiError(409, "Not Existing user cart");
+  }
+  const ProdutItemIndex = cart.items.findIndex(
+    (item) => item.product.toString() === productId && item.size === measurement
+  );
+  if (!ProdutItemIndex) {
+    throw new ApiError(409, "Not Such Item in cart");
+  }
+  const deleteCartItem = cart.items.splice(ProdutItemIndex, 1);
+  if (!deleteCartItem) {
+    throw new ApiError(409, "Not deleted CartItem");
+  }
 
-export { getCart, addToCart ,deleteItem};
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Item Deleted from cart successfully"));
+});
+
+export { getCart, addToCart, deleteItem };

@@ -11,6 +11,7 @@ const addProduct = asyncHandler(async (req, res) => {
     mainCategory,
     Category,
     SubCategory,
+    Measurement,
   } = req.body;
 
   const image1 = req.files.image1 && req.files.image1[0];
@@ -34,6 +35,7 @@ const addProduct = asyncHandler(async (req, res) => {
     mainCategory,
     Category,
     SubCategory,
+    Measurement,
     image: imageUrl,
   });
   const productCreated = await Product.findById(product._id);
@@ -56,6 +58,7 @@ const editProduct = asyncHandler(async (req, res) => {
     mainCategory,
     Category,
     SubCategory,
+    Measurement
   } = req.body;
 
   const image1 = req.files.image1 && req.files.image1[0];
@@ -65,7 +68,7 @@ const editProduct = asyncHandler(async (req, res) => {
   const images = [image1, image2, image3, image4].filter(
     (item) => item !== undefined
   );
-  const product = await Product.findById(productId);
+  const product = await Product.findByIdAndDelete(productId);
   if (!product) {
     throw new ApiError(409, "Product Not Avilable ");
   }
@@ -75,22 +78,32 @@ const editProduct = asyncHandler(async (req, res) => {
       return result.url;
     })
   );
-  product.productName = productName || product.productName;
-  product.description = description || product.description;
-  product.price = price || product.price;
-  product.mainCategory = mainCategory || product.mainCategory;
-  product.Category = Category || product.Category;
-  product.SubCategory = Category || product.SubCategory;
-  product.image = [...product.image, ...imageUrl];
-
-  const updateProduct = await product.save();
-  if (!updateProduct) {
-    throw new ApiError(409, "Product not updated");
+  //product.productName = productName || product.productName;
+  //product.description = description || product.description;
+  //product.price = price || product.price;
+  //product.mainCategory = mainCategory || product.mainCategory;
+  //product.Category = Category || product.Category;
+  //product.SubCategory = SubCategory || product.SubCategory;
+  //product.image = [...product.image, ...imageUrl];
+  const makeUpdate = await Product.create({
+    productName,
+    description,
+    price,
+    mainCategory,
+    Category,
+    SubCategory,
+    Measurement,
+    image: imageUrl,
+  });
+  const productUpdated = await Product.findById(makeUpdate._id);
+  if (!productUpdated) {
+    throw new ApiError(409, "Error occured on Product creation");
   }
+
 
   return res
     .status(201)
-    .json(new ApiResponse(200, { updateProduct }, "Product Updated"));
+    .json(new ApiResponse(200, { productUpdated }, "Product Updated"));
 });
 
 const getSingleProduct = asyncHandler(async (req, res) => {
@@ -121,6 +134,9 @@ const listAllProducts = asyncHandler(async(req,res)=>{
   if(!listAllProducts){
     throw new ApiError(409,"Error occured on listing Product")
   }
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {listProducts}, "All products"));
 })
 
-export { addProduct, editProduct, getSingleProduct, deleteProduct };
+export { addProduct, editProduct, getSingleProduct, deleteProduct ,listAllProducts};

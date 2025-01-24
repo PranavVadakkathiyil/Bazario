@@ -21,7 +21,7 @@ const productSchema = new Schema({
 
     },
     Measurement:{
-        type:[String],
+        type:String,
         required:true
     },
     mainCategory:{

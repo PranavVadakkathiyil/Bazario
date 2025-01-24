@@ -17,6 +17,9 @@ app.use(cookieParser());
 
 // routers 
 import userRouter from './routes/user.routes.js'
+import ProductRouter from './routes/product.routes.js'
+import CartRouter from './routes/cart.routes.js'
+import OrderRouter from './routes/order.routes.js'
 
 
 
@@ -24,10 +27,14 @@ import userRouter from './routes/user.routes.js'
 
 
 
-
-// route declaration
+// route declaration user
 app.use('/api/v1/users',userRouter)
-
+// route declaration Product
+app.use('/api/v1/product',ProductRouter)
+// route declaration Cart
+app.use('/api/v1/cart',CartRouter)
+// route declaration Order
+app.use('/api/v1/order',OrderRouter)
 
 
 
