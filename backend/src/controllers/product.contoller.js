@@ -86,7 +86,7 @@ const editProduct = asyncHandler(async (req, res) => {
   //product.SubCategory = SubCategory || product.SubCategory;
   //product.image = [...product.image, ...imageUrl];
   const makeUpdate = await Product.create({
-    productName,
+    productName, 
     description,
     price,
     mainCategory,

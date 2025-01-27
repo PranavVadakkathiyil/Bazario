@@ -40,27 +40,15 @@ const userSchema = new Schema(
     },
     cart: [
       {
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-        },
-        quantity: {
-          type: Number,
-          min: 1,
-          required: true,
-        },
+        type: Schema.Types.ObjectId,
+        ref: "Cart",
       },
     ],
     orders: [
       {
         product: {
           type: Schema.Types.ObjectId,
-          ref: "Product",
-        },
-        paymentMode: {
-          type: String,
-          enum: ["pending", "cod", "online"],
-          default: "pending",
+          ref: "Order",
         },
       },
     ],

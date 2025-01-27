@@ -7,13 +7,14 @@ import { Product } from "../models/product.model.js";
 import { Cart } from "../models/cart.model.js";
 
 const getCart = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
-  const cart = await Cart.findOne({ user: userId }).select("items");
+  const user = req.user
+  
+  const cart = await Cart.findOne({ user: user._id }).select("items");
   if (!cart) {
     throw new ApiError(409, "Somthing wrong on GettingCart");
   }
-  const totalPrice = 0;
-  const totalQuantity = 0;
+  let totalPrice = 0;
+  let totalQuantity = 0;
   cart.items.forEach((item) => {
     totalPrice = item.product.price * item.quantity;
     totalQuantity += item.quantity;
@@ -31,24 +32,26 @@ const getCart = asyncHandler(async (req, res) => {
     );
 });
 const addToCart = asyncHandler(async (req, res) => {
-  const { userId, productId, Quantity, measurement } = req.body;
-  if (Quantity >= 0) {
+  const { productId, Quantity, measurement } = req.body;
+  console.log(req.user.cart,"UserId");
+  const user = req.user
+  if (Quantity <= 0) {
     throw new ApiError(409, "Quantity must Add");
   }
   if (!measurement) {
     throw new ApiError(409, "measurement Should be provided");
   }
-  if (!userId || !productId) {
+  if (!user || !productId) {
     throw new ApiError(409, "Somthing wrong deatils GettingCart");
   }
-  const product = await Product.findOne(productId);
+  const product = await Product.findById(productId);
   if (!product) {
     throw new ApiError(409, "Product not avilable");
   }
-  const cart = await Cart.findById({ user: userId });
+  const cart = await Cart.findOne({ user: user._id  });
   if (!cart) {
-    cart = await Cart.create({
-      user: userId,
+     await Cart.create({
+      user: user._id ,
       item: [
         {
           product: productId,
@@ -60,21 +63,21 @@ const addToCart = asyncHandler(async (req, res) => {
       ],
     });
   } else {
-    const exisingItem = Cart.items.findIndex(
+    const exisingItem = cart.items.findIndex(
       (item) =>
         item.product.toString() === productId && item.size === measurement
     );
 
     if (exisingItem >= 0) {
-      Cart.items[exisingItem].quantity += Quantity;
+      cart.items[exisingItem].quantity += Quantity;
     } else {
-      Cart.items.push({
+      cart.items.push({
         product: productId,
         quantity: Quantity,
         size: measurement,
       });
     }
-    const saveToCart = await Cart.save();
+    const saveToCart = await cart.save();
     if (!saveToCart) {
       throw new ApiError(409, "Cart not Saved");
     }
@@ -85,24 +88,27 @@ const addToCart = asyncHandler(async (req, res) => {
   }
 });
 const deleteItem = asyncHandler(async (req, res) => {
-  const { userId, productId, measurement } = req.body;
-  if (!userId || !productId || !measurement) {
+  const {  productId, measurement } = req.body;
+  const user = req.user
+  if (!user || !productId || !measurement) {
     throw new ApiError(409, "User and Product Not fetched");
   }
-  const cart = await Cart.findOne({ user: userId });
+  const cart = await Cart.findOne({ user: user._id });
   if (!cart) {
     throw new ApiError(409, "Not Existing user cart");
   }
   const ProdutItemIndex = cart.items.findIndex(
     (item) => item.product.toString() === productId && item.size === measurement
   );
-  if (!ProdutItemIndex) {
+  if (ProdutItemIndex === -1) {
     throw new ApiError(409, "Not Such Item in cart");
   }
-  const deleteCartItem = cart.items.splice(ProdutItemIndex, 1);
-  if (!deleteCartItem) {
+  cart.items.splice(ProdutItemIndex,1);
+  const savecart = await cart.save()
+  if (!savecart) {
     throw new ApiError(409, "Not deleted CartItem");
   }
+  
 
   return res
     .status(200)
