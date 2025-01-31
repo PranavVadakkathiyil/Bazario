@@ -32,59 +32,111 @@ Bazario is a modern multivendor e-commerce application built using the MERN (Mon
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT
-- **Payment Gateway**: Razorpay
+- **Payment Gateway**: Razorpay and cod
 
 ## Installation & Setup
 
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/yourusername/bazario.git
-   cd bazario
+   git clone https://github.com/PranavVadakkathiyil/Bazario.git
+   cd Bazario
    ```
 
 2. Install dependencies for both frontend and backend:
 
    ```sh
-   cd client
+   cd frontend
    npm install
-   cd ../server
+   cd ../backend
    npm install
    ```
 
 3. Set up environment variables in a `.env` file:
 
    ```env
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   RAZORPAY_KEY=your_razorpay_key
+   PORT=****
+   MONGODB_URI="****"
+   CLOUDINARY_API_KEY="****"
+   CLOUDINARY_API_SECRET="****"
+   CLOUDINARY_NAME="****"
+   ACCESS_TOKEN_SECRET="****"
+   ACCESS_TOKEN_EXPIRY="****"
+   RAZORPAY_KEY_ID="****"
+   RAZORPAY_KEY_SECRET="****"
+   ADMIN_USERNAME="****"
+   ADMIN_PASSWORD="****"
+   
    ```
 
 4. Start the development server:
 
    ```sh
-   cd server
+   cd backend
    npm run dev
    ```
 
    In another terminal, start the frontend:
 
    ```sh
-   cd client
-   npm start
+   cd frontend
+   npm run dev
    ```
 
 ## API Endpoints
 
-[View full API documentation on Postman](your_postman_link_here)
+# API Endpoints
 
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Login user |
-| GET | `/api/products` | Fetch all products |
-| POST | `/api/orders` | Place an order |
-| GET | `/api/vendors` | Fetch vendor details |
+This document describes the API endpoints for the application.
+
+## User Routes (`/api/v1/users`)
+
+| Method | Endpoint        | Description                                     | Authentication |
+| :----- | :-------------- | :---------------------------------------------- | :------------- |
+| POST   | `/register`     | Register a new user. Accepts `avatar` (image) as multipart/form-data. | No           |
+| POST   | `/login`        | Login an existing user.                         | No           |
+| POST   | `/logout`       | Logout the current user.                        | Yes          |
+
+## Product Routes (`/api/v1/product`)
+
+| Method | Endpoint          | Description                                                                 | Authentication |
+| :----- | :---------------- | :-------------------------------------------------------------------------- | :------------- |
+| POST   | `/addproduct`     | Add a new product. Accepts `image1`, `image2`, `image3`, and `image4` (images) as multipart/form-data. | Admin Only   |
+| POST   | `/editproduct`    | Edit an existing product. Accepts `image1`, `image2`, `image3`, and `image4` (images) as multipart/form-data. | Admin Only   |
+| POST   | `/singleproduct` | Get details of a single product.                                           | No           |
+| POST   | `/deleteproduct` | Delete a product.                                                           | Admin Only   |
+| POST   | `/listallproduct`| List all products.                                                          | No           |
+
+## Order Routes (`/api/v1/order`)
+
+| Method | Endpoint          | Description                                   | Authentication |
+| :----- | :---------------- | :-------------------------------------------- | :------------- |
+| POST   | `/getallorders`  | Get all orders for the authenticated user.   | Yes          |
+| POST   | `/orderinrazorpay`| Create an order using Razorpay payment gateway. | Yes          |
+| POST   | `/orderincash`   | Create an order using cash on delivery.      | Yes          |
+
+## Cart Routes (`/api/v1/cart`)
+
+| Method | Endpoint      | Description                                     | Authentication |
+| :----- | :------------ | :---------------------------------------------- | :------------- |
+| POST   | `/getcart`    | Get the cart for the authenticated user.        | Yes          |
+| POST   | `/addtocart`  | Add an item to the cart.                      | Yes          |
+| POST   | `/deleteitem` | Delete an item from the cart.                 | Yes          |
+
+
+**Authentication:**
+
+* **Yes:** Requires a valid JWT (JSON Web Token) in the `Authorization` header.
+* **No:** No authentication required.
+* **Admin Only:** Requires a valid JWT and the user must have admin privileges.
+
+**Request Body:**  Refer to the specific controller functions for the required request body parameters for each endpoint.  The product endpoints that handle images use `multipart/form-data`.
+
+**Response:**  The response format will typically be JSON.  Refer to the specific controller functions for details on the response structure.
+
+[View full API documentation on Postman]((https://web.postman.co/workspace/a8f85987-f47a-4048-8404-ae8163798f14/documentation/28842830-6a85b192-3f0b-4f8a-8471-d3b71e8089fb))
+
+
 
 ## Model Documentation
 [Click here to view the model documentation](#)
