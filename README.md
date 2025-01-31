@@ -12,16 +12,10 @@ Bazario is a modern multivendor e-commerce application built using the MERN (Mon
 - Product browsing and searching
 - Order tracking and history
 
-### Vendor Features:
-
-- Store registration and management
-- Product listing and inventory control
-- Order management and fulfillment
-- Earnings and sales tracking
 
 ### Admin Features:
 
-- User and vendor management
+- User and order management
 - Product and category management
 - Order monitoring and reports
 - Payment and refund handling
@@ -32,7 +26,7 @@ Bazario is a modern multivendor e-commerce application built using the MERN (Mon
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **Authentication**: JWT
-- **Payment Gateway**: Razorpay and cod
+- **Payment Gateway**: Razorpay and cash on delivery
 
 ## Installation & Setup
 
