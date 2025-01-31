@@ -12,28 +12,37 @@ const RazorpayInstence = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-const getAllOrder = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
-  const cart = await Cart.findOne({ user: userId });
-  if (!cart) {
+const getUserOrders = asyncHandler(async (req, res) => {
+  
+  const user = req.user
+  const order = await Order.findOne({ user: user.id });
+  if (!order) {
     throw new ApiError(409, "Not Existing user cart");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { cart }, "Order getAllOrder successfully"));
+    .json(new ApiResponse(200, { order }, "Order getAllOrder successfully"));
 });
+
 const OrderInCash = asyncHandler(async (req, res) => {
-  const { userId, Buyeraddress } = req.body;
-  const cart = await Cart.findOne({ user: userId });
+  const {  Buyeraddress,paymentmode } = req.body;
+  const user = req.user
+  const cart = await Cart.findOne({ user: user.id });
   if (!cart) {
     throw new ApiError(409, "Not Existing user cart");
   }
+  console.log(cart);
+  
   const makeOrder = {
-    user: userId,
-    products: cart.items,
+    user: user.id,
+    products: cart.items.map((item) => ({
+      product: item.product,
+      quantity: item.quantity,
+      size: item.size
+    })),
     totalPrice: cart.totalPrice,
-    paymentMode: "cod", // Cash-on-Delivery
+    paymentMode: paymentmode, 
     paymentReference: "cod",
     status: "pending",
     address: Buyeraddress,
@@ -45,7 +54,7 @@ const OrderInCash = asyncHandler(async (req, res) => {
   if (!CreatedOrder) {
     throw new ApiError(409, "Error To Place Order");
   }
-  const deleteCartItem = await Cart.findByIdAndDelete({ user: userId });
+  const deleteCartItem = await Cart.findOneAndDelete({ user: user.id });
   if (!deleteCartItem) {
     throw new ApiError(500, "Failed to clear user cart.");
   }
@@ -98,4 +107,4 @@ const orderInRazorpay = asyncHandler(async (req, res) => {
     );
 });
 
-export { OrderInCash, orderInRazorpay, getAllOrder };
+export { OrderInCash, orderInRazorpay, getUserOrders };

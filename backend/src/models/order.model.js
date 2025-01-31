@@ -20,8 +20,8 @@ const orderSchema = new Schema(
           required: true,
           min: 1,
         },
-        price: {
-          type: Number,
+        size: {
+          type: String,
           required: true,
         },
       },
@@ -44,11 +44,8 @@ const orderSchema = new Schema(
       default: "pending",
     },
     address: {
-      street: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String },
-      country: { type: String, required: true },
-      postalCode: { type: String, required: true },
+      type: String,
+      required:true
     },
   },
   { timestamps: true }

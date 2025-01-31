@@ -52,7 +52,7 @@ const addToCart = asyncHandler(async (req, res) => {
   if (!cart) {
      await Cart.create({
       user: user._id ,
-      item: [
+      items: [
         {
           product: productId,
 
@@ -63,13 +63,13 @@ const addToCart = asyncHandler(async (req, res) => {
       ],
     });
   } else {
-    const exisingItem = cart.items.findIndex(
+    const existingItem = cart.items.findIndex(
       (item) =>
         item.product.toString() === productId && item.size === measurement
     );
 
-    if (exisingItem >= 0) {
-      cart.items[exisingItem].quantity += Quantity;
+    if (existingItem >= 0) {
+      cart.items[existingItem].quantity += Quantity;
     } else {
       cart.items.push({
         product: productId,
