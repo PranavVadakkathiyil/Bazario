@@ -1,6 +1,6 @@
 # Bazario -  E-commerce Platform
 
-Bazario is a modern multivendor e-commerce application built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. The platform allows to register, manage their stores, and sell products while providing a seamless shopping experience for customers.
+Bazario is a modern e-commerce application built using the MERN (MongoDB, Express.js, React.js, Node.js) stack. The platform allows to register, manage their stores, and sell products while providing a seamless shopping experience for customers.
 
 ## Features
 
