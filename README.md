@@ -134,7 +134,7 @@ This document describes the API endpoints for the application.
 
 **Response:**  The response format will typically be JSON.  Refer to the specific controller functions for details on the response structure.
 
-[View full API documentation on Postman](https://web.postman.co/workspace/a8f85987-f47a-4048-8404-ae8163798f14/documentation/28842830-6a85b192-3f0b-4f8a-8471-d3b71e8089fb)
+[View full API documentation on Postman](https://documenter.getpostman.com/view/28842830/2sAYX3phhH)
 
 
 
